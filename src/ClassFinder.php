@@ -36,7 +36,7 @@ abstract class ClassFinder
      * @throws Exception
      * @return array|string[] an array with the name of the defined classes
      */
-    protected static function getProjectClasses(string $namespace): array
+    private static function getProjectClasses(string $namespace): array
     {
         if (in_array($namespace, self::$loadedNamespaces)) {
             return get_declared_classes();
@@ -61,7 +61,7 @@ abstract class ClassFinder
      * @throws Exception
      * @return array|string[] the class map, keyed by Classname values of files
      */
-    protected static function getClassMap(string $namespace): array
+    private static function getClassMap(string $namespace): array
     {
         self::checkState();
         if (self::$optimisedClassMap !== false) {
@@ -84,7 +84,7 @@ abstract class ClassFinder
      * @param  string $haystack the input string
      * @return bool   true if haystack starts with needle, false otherwise
      */
-    protected static function strStartsWith(string $needle, string $haystack):bool
+    private static function strStartsWith(string $needle, string $haystack):bool
     {
         return substr($haystack, 0, strlen($needle)) === $needle;
     }
@@ -94,7 +94,7 @@ abstract class ClassFinder
      *
      * @throws Exception thrown when a combination of components is not available
      */
-    protected static function checkState() : void
+    private static function checkState() : void
     {
         self::initClassMap();
         if (false === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
@@ -106,7 +106,7 @@ abstract class ClassFinder
     /**
      * Initializes the optimised class map, if possible.
      */
-    protected static function initClassMap() :void
+    private static function initClassMap() :void
     {
         if (null !== self::$optimisedClassMap) {
             return;
@@ -121,7 +121,7 @@ abstract class ClassFinder
      *
      * @return ClassLoader|null
      */
-    protected static function getComposerAutoloader(): ?ClassLoader
+    private static function getComposerAutoloader(): ?ClassLoader
     {
         $funcs = spl_autoload_functions();
         $classLoader = null;
@@ -168,7 +168,7 @@ abstract class ClassFinder
      * @param  string $namespace the namespace (without preceding \
      * @return array  a list of directories containing classes for that namespace
      */
-    protected static function getProjectSearchDirs(string $namespace): array
+    private static function getProjectSearchDirs(string $namespace): array
     {
         $autoloader = self::getComposerAutoloader();
         $raw = $autoloader->getPrefixesPsr4();
@@ -182,7 +182,7 @@ abstract class ClassFinder
      * @throws ReflectionException
      * @return bool                true if in vendor otherwise false
      */
-    protected static function isClassInVendor(string $className) : bool
+    private static function isClassInVendor(string $className) : bool
     {
         $reflection = new ReflectionClass($className);
         $filename = $reflection->getFileName();
