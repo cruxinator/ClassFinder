@@ -1,0 +1,33 @@
+{
+    "name": "cruxinator/class-finder",
+    "description": "locates defined classes within the autoloader",
+    "type": "library",
+    "require": {
+        "php": "^7.1",
+        "composer/composer": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0|^9.0"
+    },
+    "suggest": {
+        "monolog/monolog": "Allows more advanced logging of the application flow"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "c-harris",
+            "email": "c.harris@communicationinnovations.com.au"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Cruxinator\\ClassFinder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Cruxinator\\ClassFinder\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev"
+}
