@@ -64,8 +64,8 @@ abstract class ClassFinder
     protected static function getClassMap(string $namespace): array
     {
         self::checkState();
-        if (self::$optimizedClassMap !== false) {
-            return self::$optimizedClassMap ;
+        if (self::$optimisedClassMap !== false) {
+            return self::$optimisedClassMap ;
         }
         $projectDirs = self::getProjectSearchDirs($namespace);
         $map = [];
