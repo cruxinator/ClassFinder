@@ -8,6 +8,7 @@ php:
   - nightly
 
 before_script:
+  - echo $(php -r "echo PHP_VERSION;")
   - composer global require hirak/prestissimo
   - composer install
   - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
