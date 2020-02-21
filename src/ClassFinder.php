@@ -156,10 +156,6 @@ abstract class ClassFinder
             $conditional,
             $includeVendor
         ) {
-            /*$dontSkip = true;
-            if (!$includeVendor) {
-                $dontSkip = !self::isClassInVendor($class);
-            }*/
             $dontSkip = $includeVendor || !self::isClassInVendor($class);
             return substr($class, 0, strlen($namespace)) === $namespace && $dontSkip && $conditional($class) ;
         }));
@@ -176,6 +172,8 @@ abstract class ClassFinder
     {
         $autoloader = self::getComposerAutoloader();
         $raw = $autoloader->getPrefixesPsr4();
+        //TODO: at the moment this requires the psr4 namespace. Should we search for a parent namespace if the
+        // requested one is not present? Also, what do we do for empty strings?
         return $raw[$namespace];
     }
 
