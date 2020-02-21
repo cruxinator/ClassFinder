@@ -35,7 +35,7 @@ class ClassFinderConcrete extends ClassFinder
     }
 
     /**
-     * Gets a dynamically assigned autoloader
+     * Gets a dynamically assigned autoloader.
      *
      * @return ClassLoader|null
      */
