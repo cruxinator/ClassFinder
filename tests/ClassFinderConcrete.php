@@ -29,13 +29,23 @@ class ClassFinderConcrete extends ClassFinder
         self::$vendorDir = '';
     }
 
-    public function setOptimisedClassMap($value){
+    protected static function getMethod($name)
+    {
+        $class = new ReflectionClass(self::class);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method;
+    }
+
+    public function setOptimisedClassMap($value)
+    {
         self::$optimisedClassMap = $value;
     }
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([self::class, $name], $arguments);
+        $method = self::getMethod($name);
+        return $method->invokeArgs(null, $arguments);
     }
 
     /**
