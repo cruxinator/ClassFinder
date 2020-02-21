@@ -3,11 +3,10 @@
 
 namespace Tests\Cruxinator\ClassFinder;
 
-
 use Cruxinator\ClassFinder\ClassFinder;
 
 /**
- * Class ClassFinderConcrete
+ * Class ClassFinderConcrete.
  * @package Tests\Cruxinator\ClassFinder
  * @method getProjectClasses(string $namespace): array
  * @method getClassMap(string $namespace): array
@@ -21,8 +20,8 @@ use Cruxinator\ClassFinder\ClassFinder;
  */
 class ClassFinderConcrete extends ClassFinder
 {
-
-    public function __construct(){
+    public function __construct()
+    {
         self::$loadedNamespaces = [];
         self::$optimizedClassMap = null;
         self::$vendorDir = '';
