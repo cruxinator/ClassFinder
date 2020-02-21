@@ -124,12 +124,13 @@ abstract class ClassFinder
     protected static function getComposerAutoloader(): ?ClassLoader
     {
         $funcs = spl_autoload_functions();
+        $classLoader = null;
         foreach ($funcs as $class) {
             if (is_array($class) && $class[0] instanceof ClassLoader) {
-                return $class[0];
+                $classLoader = $class[0];
             }
         }
-        return null;
+        return $classLoader;
     }
 
     /**
