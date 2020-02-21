@@ -21,8 +21,6 @@ use ReflectionClass;
  */
 class ClassFinderConcrete extends ClassFinder
 {
-    protected static $mockClassLoader = null;
-
     public function __construct()
     {
         self::$loadedNamespaces = [];
@@ -47,23 +45,5 @@ class ClassFinderConcrete extends ClassFinder
     {
         $method = self::getMethod($name);
         return $method->invokeArgs(null, $arguments);
-    }
-
-    /**
-     * Gets a dynamically assigned autoloader.
-     *
-     * @return ClassLoader|null
-     */
-    protected static function getComposerAutoloader(): ?ClassLoader
-    {
-        if (self::$mockClassLoader !== null) {
-            return self::$mockClassLoader;
-        }
-        return parent::getComposerAutoloader();
-    }
-
-    protected static function setMockClassLoader($mockObject)
-    {
-        self::$mockClassLoader = $mockObject;
     }
 }
