@@ -8,7 +8,8 @@ php:
   - nightly
 
 before_script:
-  - echo $(php -r "echo PHP_VERSION;")
+  - PHPV = $(php -r "echo PHP_VERSION;")
+  - echo $PHPV
   - composer global require hirak/prestissimo
   - composer install
   - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
@@ -16,7 +17,7 @@ before_script:
 
 script:
   - mkdir -p build/logs
-  - phpunit --coverage-clover build/logs/clover.xml
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - php vendor/bin/php-coveralls --exclude-no-stmt
