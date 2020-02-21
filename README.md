@@ -6,4 +6,4 @@
 [![Latest Unstable Version](https://poser.pugx.org/cruxinator/class-finder/v/unstable)](https://packagist.org/packages/cruxinator/class-finder)
 [![Total Downloads](https://poser.pugx.org/cruxinato/class-finder/downloads)](https://packagist.org/packages/cruxinator/class-finder)
 [![Monthly Downloads](https://poser.pugx.org/cruxinator/class-finder/d/monthly)](https://packagist.org/packages/cruxinator/class-finder)
-[![Daily Downloads](https://poser.pugx.org/class-finder/d/daily)](https://packagist.org/packages/cruxinator/cruxinator/class-finder)
+[![Daily Downloads](https://poser.pugx.org/class-finder/d/daily)](https://packagist.org/packages/cruxinator/class-finder)
