@@ -23,7 +23,7 @@ class ClassFinderConcrete extends ClassFinder
     public function __construct()
     {
         self::$loadedNamespaces = [];
-        self::$optimizedClassMap = null;
+        self::$optimisedClassMap = null;
         self::$vendorDir = '';
     }
     public function __call($name, $arguments)
