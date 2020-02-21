@@ -24,7 +24,7 @@ class HelperTest extends TestCase
      * @param mixed $haystack
      * @param mixed $result
      */
-    public function teststrStartsWith($needle, $haystack, $result)
+    public function testStrStartsWith($needle, $haystack, $result)
     {
         $this->assertEquals($result, $this->classFinder->strStartsWith($needle, $haystack));
     }

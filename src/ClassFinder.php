@@ -45,7 +45,7 @@ abstract class ClassFinder
         // now class list of maps are assembled, use class_exists calls to explicitly autoload them,
         // while not running them
         foreach ($map as $class => $file) {
-            if (self::strStartsWith($namespace, $class)) {
+            if (!self::strStartsWith($namespace, $class)) {
                 continue;
             }
             class_exists($class, true);
