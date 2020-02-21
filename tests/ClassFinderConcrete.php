@@ -5,6 +5,7 @@ namespace Tests\Cruxinator\ClassFinder;
 
 use Composer\Autoload\ClassLoader;
 use Cruxinator\ClassFinder\ClassFinder;
+use ReflectionClass;
 
 /**
  * Class ClassFinderConcrete.
