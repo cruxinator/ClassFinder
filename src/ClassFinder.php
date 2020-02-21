@@ -10,7 +10,7 @@ use ReflectionException;
 /**
  * Class ClassFinder.
  *
- * functionality similar to get_declared_classes() with autoload support.
+ * Functionality similar to get_declared_classes(), with autoload support.
  *
  * @package Cruxinator\ClassFinder
  */
@@ -27,7 +27,7 @@ abstract class ClassFinder
     /**
      * @var null|array|string[]
      */
-    protected static $optimizedClassMap = null;
+    protected static $optimisedClassMap = null;
 
     /**
      * Explicitly loads a namespace before returning declared classes.
@@ -55,7 +55,7 @@ abstract class ClassFinder
     }
 
     /**
-     * Attempts to get an optimized ClassMap failing that attempts to generate one for the namespace.
+     * Attempts to get an optimised ClassMap failing that attempts to generate one for the namespace.
      *
      * @param  string         $namespace the namespace to generate for if necessary
      * @throws Exception
@@ -92,28 +92,28 @@ abstract class ClassFinder
     /**
      * Checks the state requirements (package and autoloader).
      *
-     * @throws Exception thrown when a a combination of components is not available
+     * @throws Exception thrown when a combination of components is not available
      */
     protected static function checkState() : void
     {
         self::initClassMap();
-        if (false === self::$optimizedClassMap && !class_exists(ClassMapGenerator::class)) {
+        if (false === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
             throw new Exception('Cruxinator/ClassFinder requires either composer/composer' .
-             ' or an optimized autoloader(`composer dump-autoload -o`)');
+             ' or an optimised autoloader(`composer dump-autoload -o`)');
         }
     }
 
     /**
-     * Initializes the optimized class map if possible.
+     * Initializes the optimised class map, if possible.
      */
     protected static function initClassMap() :void
     {
-        if (null !== self::$optimizedClassMap) {
+        if (null !== self::$optimisedClassMap) {
             return;
         }
         $autoLoader = self::getComposerAutoloader();
         $classMap = $autoLoader->getClassMap();
-        self::$optimizedClassMap = isset($classMap[__CLASS__]) ? $classMap : false;
+        self::$optimisedClassMap = isset($classMap[__CLASS__]) ? $classMap : false;
     }
 
     /**
@@ -137,7 +137,7 @@ abstract class ClassFinder
      *
      * @param  string        $namespace     namespace prefix to restrict the list (must be configured psr4 namespace
      * @param  callable|null $conditional   callable method of signature `conditional(string $className) : bool` to check to include
-     * @param  bool          $includeVendor weather classes in the vendor directory should be considered
+     * @param  bool          $includeVendor whether classes in the vendor directory should be considered
      * @throws Exception
      * @return array         the list of classes
      */
