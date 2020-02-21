@@ -8,14 +8,13 @@ php:
   - nightly
 
 before_script:
-  - PHPV = $(php -r "echo PHP_VERSION;")
-  - echo $PHPV
   - composer global require hirak/prestissimo
   - composer install
   - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
 
 
 script:
+  - echo $(php -r "echo PHP_VERSION;");
   - mkdir -p build/logs
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
