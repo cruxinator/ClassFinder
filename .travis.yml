@@ -9,7 +9,8 @@ php:
 
 before_script:
   - composer global require hirak/prestissimo
-  - composer install
+  - if [$(php -r "echo PHP_VERSION;") == "8.0.0" ]; then composer install --ignore-platform-reqs fi;
+  - if [$(php -r "echo PHP_VERSION;") != "8.0.0" ]; then composer install  fi;
   - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
 
 
