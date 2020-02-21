@@ -4,6 +4,7 @@
 namespace Tests\Cruxinator\ClassFinder\Unit;
 
 
+use Cruxinator\ClassFinder\ClassFinder;
 use Tests\Cruxinator\ClassFinder\ClassFinderConcrete;
 use Tests\Cruxinator\ClassFinder\TestCase;
 
@@ -19,6 +20,11 @@ class ClassFinderTest extends TestCase
         $this->classFinder = new ClassFinderConcrete();
     }
 
+    public function testSelf(){
+        $classes = $this->classFinder->getClasses("Cruxinator\\ClassFinder\\");
+        $this->assertEquals(1,count($classes));
+        $this->assertEquals(ClassFinder::class, $classes[0]);
+    }
 
     public function testFindPsr(){
         $classes = $this->classFinder->getClasses("Psr\\Log\\");
@@ -29,6 +35,11 @@ class ClassFinderTest extends TestCase
         }
         $twoClasses = $this->classFinder->getClasses("Psr\\Log\\");
         $this->assertEquals(count($classes), count($twoClasses));
+    }
+
+    public function testTwoCallsSameFinder(){
+        $this->testFindPsr();
+        $this->testSelf();
     }
 
     public function testFindPsrNotAbstract(){
