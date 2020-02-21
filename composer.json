@@ -8,7 +8,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0",
-        "composer/composer": "^1.0"
+        "composer/composer": "^1.0",
+        "php-coveralls/php-coveralls": "^2.2"
     },
     "suggest": {
         "composer/composer": "Allows classmap generation at runtime useful for dev builds"
