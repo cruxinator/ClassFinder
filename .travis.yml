@@ -10,6 +10,8 @@ php:
 before_script:
   - composer global require hirak/prestissimo
   - composer install
+  - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
+
 
 script:
   - mkdir -p build/logs
@@ -20,3 +22,10 @@ after_script:
 
 after_success:
   - coveralls
+
+env: # important!
+  - OPTIMISE=true
+  - OPTIMISE=false
+matrix:
+  allow_failures:
+    - php: nightly
