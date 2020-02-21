@@ -27,6 +27,8 @@ class ClassFinderTest extends TestCase
             $this->assertTrue(class_exists($class));
             $this->assertStringStartsWith("Psr\\Log\\",$class);
         }
+        $twoClasses = $this->classFinder->getClasses("Psr\\Log\\");
+        $this->assertEquals(count($classes), count($twoClasses));
     }
 
     public function testFindPsrNotAbstract(){
@@ -55,5 +57,10 @@ class ClassFinderTest extends TestCase
             $reflectionClass = new \ReflectionClass($class);
             $this->assertTrue($reflectionClass->isAbstract());
         }
+    }
+
+    public function testFindPsrNotInVender(){
+        $classes = $this->classFinder->getClasses("Psr\\Log\\",null,false);
+        $this->assertFalse(count($classes) > 0);
     }
 }
