@@ -29,6 +29,10 @@ class ClassFinderConcrete extends ClassFinder
         self::$vendorDir = '';
     }
 
+    public function setOptimisedClassMap($value){
+        self::$optimisedClassMap = $value;
+    }
+
     public function __call($name, $arguments)
     {
         return call_user_func_array([self::class, $name], $arguments);

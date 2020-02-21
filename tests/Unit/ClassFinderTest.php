@@ -69,9 +69,33 @@ class ClassFinderTest extends TestCase
             $this->assertTrue($reflectionClass->isAbstract());
         }
     }
-
+    /**
+     * @runInSeparateProcess
+     */
     public function testFindPsrNotInVender(){
         $classes = $this->classFinder->getClasses("Psr\\Log\\",null,false);
         $this->assertFalse(count($classes) > 0);
+    }
+
+
+    public function testErrorCheck(){
+ 
+        $this->classFinder->setOptimisedClassMap(false);
+        $autoloader = $this->classFinder->getComposerAutoloader();
+        $classMap = $autoloader->getClassMap();
+        if(array_key_exists(__CLASS__,$classMap)){
+            $this->markTestSkipped("Error only works with non optimized autoloader");
+        }
+        $autoloader->unregister();
+
+        try {
+            $this->classFinder->checkState();
+            $autoloader->register();
+            $this->fail();
+            return;
+        }catch(\Exception $e){
+            $autoloader->register();
+            $this->assertInstanceOf(\Exception::class, $e);
+        }
     }
 }
