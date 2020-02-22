@@ -31,8 +31,8 @@ class ClassFinderConcrete extends ClassFinder
 
     /**
      * @param $name
-     * @return \ReflectionMethod
      * @throws \ReflectionException
+     * @return \ReflectionMethod
      */
     protected static function getMethod($name)
     {
