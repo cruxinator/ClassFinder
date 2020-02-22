@@ -19,15 +19,15 @@ abstract class ClassFinder
     /**
      * @var array|string[]
      */
-    protected static $loadedNamespaces = [];
+    private static $loadedNamespaces = [];
     /**
      * @var string
      */
-    protected static $vendorDir = '';
+    private static $vendorDir = '';
     /**
      * @var null|array|string[]|bool
      */
-    protected static $optimisedClassMap = null;
+    private static $optimisedClassMap = null;
 
     /**
      * Explicitly loads a namespace before returning declared classes.
