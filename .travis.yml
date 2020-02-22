@@ -9,7 +9,6 @@ php:
 
 before_script:
   - composer global require hirak/prestissimo
-  - composer remove infection/infection --no-update --dev;
   - if  php -r "echo PHP_VERSION;" | grep -q "8.0" ; then composer install --ignore-platform-reqs; else composer install; fi;
   - if [ "$OPTIMISE" == "true" ]; then composer dump-autoload --optimize; fi;
 
@@ -23,4 +22,6 @@ after_script:
 env: # important!
   - OPTIMISE=true
   - OPTIMISE=false
-
+matrix:
+  allow_failures:
+  - php: nightly
