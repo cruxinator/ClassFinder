@@ -38,7 +38,7 @@ class ClassFinderConcrete extends ClassFinder
     }
     protected static function getProperty($name)
     {
-        $reflectionProperty = new ReflectionProperty(self::class, 'measurements');
+        $reflectionProperty = new ReflectionProperty(self::class, $name);
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty;
     }
