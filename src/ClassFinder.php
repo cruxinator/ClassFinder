@@ -57,7 +57,7 @@ abstract class ClassFinder
     /**
      * Attempts to get an optimised ClassMap failing that attempts to generate one for the namespace.
      *
-     * @param  string         $namespace the namespace to generate for if necessary
+     * @param  string              $namespace the namespace to generate for if necessary
      * @throws Exception
      * @return null|array|string[] the class map, keyed by Classname values of files
      */
