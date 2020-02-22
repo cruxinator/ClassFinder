@@ -23,9 +23,9 @@ class ClassFinderConcrete extends ClassFinder
 {
     public function __construct()
     {
-        self::$loadedNamespaces = [];
-        self::$optimisedClassMap = null;
-        self::$vendorDir = '';
+        $this->loadedNamespaces = [];
+        $this->optimisedClassMap = null;
+        $this->vendorDir = '';
     }
 
     protected static function getMethod($name)
@@ -44,7 +44,7 @@ class ClassFinderConcrete extends ClassFinder
 
     public function setOptimisedClassMap($value)
     {
-        self::$optimisedClassMap = $value;
+        $this->optimisedClassMap = $value;
     }
 
     public function __call($name, $arguments)
