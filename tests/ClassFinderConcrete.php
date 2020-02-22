@@ -44,8 +44,8 @@ class ClassFinderConcrete extends ClassFinder
 
     /**
      * @param $name
-     * @return ReflectionProperty
      * @throws \ReflectionException
+     * @return ReflectionProperty
      */
     protected static function getProperty($name)
     {
@@ -62,8 +62,8 @@ class ClassFinderConcrete extends ClassFinder
     /**
      * @param $name
      * @param $arguments
-     * @return mixed
      * @throws \ReflectionException
+     * @return mixed
      */
     public function __call($name, $arguments)
     {
