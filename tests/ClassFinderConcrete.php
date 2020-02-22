@@ -29,6 +29,11 @@ class ClassFinderConcrete extends ClassFinder
         $this->vendorDir = '';
     }
 
+    /**
+     * @param $name
+     * @return \ReflectionMethod
+     * @throws \ReflectionException
+     */
     protected static function getMethod($name)
     {
         $class = new ReflectionClass(self::class);
@@ -36,6 +41,12 @@ class ClassFinderConcrete extends ClassFinder
         $method->setAccessible(true);
         return $method;
     }
+
+    /**
+     * @param $name
+     * @return ReflectionProperty
+     * @throws \ReflectionException
+     */
     protected static function getProperty($name)
     {
         $reflectionProperty = new ReflectionProperty(parent::class, $name);
@@ -48,12 +59,23 @@ class ClassFinderConcrete extends ClassFinder
         $this->optimisedClassMap = $value;
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     * @throws \ReflectionException
+     */
     public function __call($name, $arguments)
     {
         $method = self::getMethod($name);
         return $method->invokeArgs(null, $arguments);
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @throws \ReflectionException
+     */
     public function __set($name, $value)
     {
         $property = self::getProperty($name);
