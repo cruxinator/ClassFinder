@@ -35,6 +35,12 @@ class ClassFinderConcrete extends ClassFinder
         $method->setAccessible(true);
         return $method;
     }
+    protected static function getProperty($name) 
+    {
+        $reflectionProperty = new ReflectionProperty(self::class, 'measurements');
+        $reflectionProperty->setAccessible(true);
+        return $reflectionProperty;
+    }
 
     public function setOptimisedClassMap($value)
     {
@@ -45,5 +51,11 @@ class ClassFinderConcrete extends ClassFinder
     {
         $method = self::getMethod($name);
         return $method->invokeArgs(null, $arguments);
+    }
+
+    public function __set($name, $value)
+    {
+        $property = self::getProperty($name);
+        $property->setValue(null, $value);
     }
 }
