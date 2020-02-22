@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder;
+namespace Cruxinator\ClassFinder\Tests;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {

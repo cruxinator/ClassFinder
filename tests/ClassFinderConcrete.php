@@ -1,10 +1,12 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder;
+namespace Cruxinator\ClassFinder\Tests;
 
 use Composer\Autoload\ClassLoader;
 use Cruxinator\ClassFinder\ClassFinder;
+use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * Class ClassFinderConcrete.
@@ -20,39 +22,63 @@ use Cruxinator\ClassFinder\ClassFinder;
  */
 class ClassFinderConcrete extends ClassFinder
 {
-    protected static $mockClassLoader = null;
-
     public function __construct()
     {
-        self::$loadedNamespaces = [];
-        self::$optimisedClassMap = null;
-        self::$vendorDir = '';
-    }
-
-    public function setOptimisedClassMap($value){
-        self::$optimisedClassMap = $value;
-    }
-
-    public function __call($name, $arguments)
-    {
-        return call_user_func_array([self::class, $name], $arguments);
+        $this->loadedNamespaces = [];
+        $this->optimisedClassMap = null;
+        $this->vendorDir = '';
     }
 
     /**
-     * Gets a dynamically assigned autoloader.
-     *
-     * @return ClassLoader|null
+     * @param $name
+     * @throws \ReflectionException
+     * @return \ReflectionMethod
      */
-    protected static function getComposerAutoloader(): ?ClassLoader
+    protected static function getMethod($name)
     {
-        if (self::$mockClassLoader !== null) {
-            return self::$mockClassLoader;
-        }
-        return parent::getComposerAutoloader();
+        $class = new ReflectionClass(self::class);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method;
     }
 
-    protected static function setMockClassLoader($mockObject)
+    /**
+     * @param $name
+     * @throws \ReflectionException
+     * @return ReflectionProperty
+     */
+    protected static function getProperty($name)
     {
-        self::$mockClassLoader = $mockObject;
+        $reflectionProperty = new ReflectionProperty(parent::class, $name);
+        $reflectionProperty->setAccessible(true);
+        return $reflectionProperty;
+    }
+
+    public function setOptimisedClassMap($value)
+    {
+        $this->optimisedClassMap = $value;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @throws \ReflectionException
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        $method = self::getMethod($name);
+        return $method->invokeArgs(null, $arguments);
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @throws \ReflectionException
+     */
+    public function __set($name, $value)
+    {
+        $property = self::getProperty($name);
+        $property->setValue(null, $value);
     }
 }

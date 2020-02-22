@@ -1,12 +1,11 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder\Unit;
-
+namespace Cruxinator\ClassFinder\Tests\Unit;
 
 use Cruxinator\ClassFinder\ClassFinder;
-use Tests\Cruxinator\ClassFinder\ClassFinderConcrete;
-use Tests\Cruxinator\ClassFinder\TestCase;
+use Cruxinator\ClassFinder\Tests\ClassFinderConcrete;
+use Cruxinator\ClassFinder\Tests\TestCase;
 
 class ClassFinderTest extends TestCase
 {
@@ -20,70 +19,78 @@ class ClassFinderTest extends TestCase
         $this->classFinder = new ClassFinderConcrete();
     }
 
-    public function testSelf(){
-        $classes = $this->classFinder->getClasses("Cruxinator\\ClassFinder\\");
-        $this->assertEquals(1,count($classes));
-        $this->assertEquals(ClassFinder::class, $classes[0]);
+    public function testSelf()
+    {
+        $classes = $this->classFinder->getClasses('Cruxinator\\ClassFinder\\');
+        $this->assertEquals(5, count($classes));
+        $this->assertTrue(in_array(ClassFinder::class, $classes));
+        $this->assertTrue(in_array(TestCase::class, $classes));
     }
 
-    public function testFindPsr(){
-        $classes = $this->classFinder->getClasses("Psr\\Log\\");
+    public function testFindPsr()
+    {
+        $classes = $this->classFinder->getClasses('Psr\\Log\\');
         $this->assertTrue(count($classes) > 0);
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $this->assertTrue(class_exists($class));
-            $this->assertStringStartsWith("Psr\\Log\\",$class);
+            $this->assertStringStartsWith('Psr\\Log\\', $class);
         }
-        $twoClasses = $this->classFinder->getClasses("Psr\\Log\\");
+        $twoClasses = $this->classFinder->getClasses('Psr\\Log\\');
         $this->assertEquals(count($classes), count($twoClasses));
     }
 
-    public function testTwoCallsSameFinder(){
+    public function testTwoCallsSameFinder()
+    {
         $this->testFindPsr();
         $this->testSelf();
     }
 
-    public function testFindPsrNotAbstract(){
-        $classes = $this->classFinder->getClasses("Psr\\Log\\", function($class){
+    public function testFindPsrNotAbstract()
+    {
+        $classes = $this->classFinder->getClasses('Psr\\Log\\', function ($class) {
             $reflectionClass = new \ReflectionClass($class);
             return !$reflectionClass->isAbstract();
         });
         $this->assertTrue(count($classes) > 0);
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $this->assertTrue(class_exists($class));
-            $this->assertStringStartsWith("Psr\\Log\\",$class);
+            $this->assertStringStartsWith('Psr\\Log\\', $class);
             $reflectionClass = new \ReflectionClass($class);
             $this->assertFalse($reflectionClass->isAbstract());
         }
     }
 
-    public function testFindPsrOnlyAbstract(){
-        $classes = $this->classFinder->getClasses("Psr\\Log\\", function($class){
+    public function testFindPsrOnlyAbstract()
+    {
+        $classes = $this->classFinder->getClasses('Psr\\Log\\', function ($class) {
             $reflectionClass = new \ReflectionClass($class);
             return $reflectionClass->isAbstract();
         });
         $this->assertTrue(count($classes) > 0);
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $this->assertTrue(class_exists($class));
-            $this->assertStringStartsWith("Psr\\Log\\",$class);
+            $this->assertStringStartsWith('Psr\\Log\\', $class);
             $reflectionClass = new \ReflectionClass($class);
             $this->assertTrue($reflectionClass->isAbstract());
         }
     }
 
-    public function testFindPsrNotInVender(){
-        $classes = $this->classFinder->getClasses("Psr\\Log\\",null,false);
+    public function testFindPsrNotInVendor()
+    {
+        $classes = $this->classFinder->getClasses('Psr\\Log\\', null, false);
         $this->assertFalse(count($classes) > 0);
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testErrorCheck(){
+    public function testErrorCheck()
+    {
         $this->classFinder->setOptimisedClassMap(false);
         $autoloader = $this->classFinder->getComposerAutoloader();
         $classMap = $autoloader->getClassMap();
-        if(array_key_exists(__CLASS__,$classMap)){
-            $this->markTestSkipped("Error only works with non optimized autoloader");
+        if (array_key_exists(__CLASS__, $classMap)) {
+            $this->markTestSkipped('Error only works with non optimised autoloader');
         }
         $autoloader->unregister();
 
@@ -92,9 +99,12 @@ class ClassFinderTest extends TestCase
             $autoloader->register();
             $this->fail();
             return;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $autoloader->register();
             $this->assertInstanceOf(\Exception::class, $e);
+            $this->assertContains('Cruxinator/ClassFinder', $e->getMessage());
+            $this->assertContains('composer/composer', $e->getMessage());
+            $this->assertContains('composer dump-autoload -o', $e->getMessage());
         }
     }
 }

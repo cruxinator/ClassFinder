@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder\Unit;
+namespace Cruxinator\ClassFinder\Tests\Unit;
 
-use Tests\Cruxinator\ClassFinder\ClassFinderConcrete;
-use Tests\Cruxinator\ClassFinder\TestCase;
+use Cruxinator\ClassFinder\Tests\ClassFinderConcrete;
+use Cruxinator\ClassFinder\Tests\TestCase;
 
 class HelperTest extends TestCase
 {
