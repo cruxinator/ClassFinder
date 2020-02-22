@@ -20,6 +20,10 @@
         {
             "name": "c-harris",
             "email": "c.harris@communicationinnovations.com.au"
+        },
+        {
+            "name": "Alex Goodwin",
+            "email": "cyberia.resurrection@gmail.com"
         }
     ],
     "autoload": {
@@ -31,6 +35,9 @@
         "psr-4": {
             "Cruxinator\\ClassFinder\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "mutate": "vendor/bin/infection --threads=4"
     },
     "minimum-stability": "stable"
 }
