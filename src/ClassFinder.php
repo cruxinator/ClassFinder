@@ -59,12 +59,13 @@ abstract class ClassFinder
      *
      * @param  string         $namespace the namespace to generate for if necessary
      * @throws Exception
-     * @return array|string[] the class map, keyed by Classname values of files
+     * @return null|array|string[] the class map, keyed by Classname values of files
      */
     private static function getClassMap(string $namespace): array
     {
         self::checkState();
         if (self::$optimisedClassMap !== false) {
+            assert(!is_bool(self::$optimisedClassMap));
             return self::$optimisedClassMap ;
         }
         $projectDirs = self::getProjectSearchDirs($namespace);
