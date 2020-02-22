@@ -25,7 +25,7 @@ abstract class ClassFinder
      */
     protected static $vendorDir = '';
     /**
-     * @var null|array|string[]
+     * @var null|array|string[]|bool
      */
     protected static $optimisedClassMap = null;
 
