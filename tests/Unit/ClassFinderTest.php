@@ -101,6 +101,9 @@ class ClassFinderTest extends TestCase
         } catch (\Exception $e) {
             $autoloader->register();
             $this->assertInstanceOf(\Exception::class, $e);
+            $this->assertContains('Cruxinator/ClassFinder', $e->getMessage());
+            $this->assertContains('composer/composer', $e->getMessage());
+            $this->assertContains('composer dump-autoload -o', $e->getMessage());
         }
     }
 }
