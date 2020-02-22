@@ -6,6 +6,7 @@ namespace Tests\Cruxinator\ClassFinder;
 use Composer\Autoload\ClassLoader;
 use Cruxinator\ClassFinder\ClassFinder;
 use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * Class ClassFinderConcrete.
@@ -37,7 +38,7 @@ class ClassFinderConcrete extends ClassFinder
     }
     protected static function getProperty($name)
     {
-        $reflectionProperty = new ReflectionProperty(self::class, 'measurements');
+        $reflectionProperty = new , 'measurements');
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty;
     }
