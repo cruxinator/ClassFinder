@@ -29,7 +29,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Cruxinator\\ClassFinder\\": "tests/"
+            "Cruxinator\\ClassFinder\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable"

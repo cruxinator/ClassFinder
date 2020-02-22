@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder;
+namespace Cruxinator\ClassFinder\Tests;
 
 use Composer\Autoload\ClassLoader;
 use Cruxinator\ClassFinder\ClassFinder;

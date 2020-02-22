@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Tests\Cruxinator\ClassFinder\Unit;
+namespace Cruxinator\ClassFinder\Tests\Unit;
 
 use Cruxinator\ClassFinder\ClassFinder;
-use Tests\Cruxinator\ClassFinder\ClassFinderConcrete;
-use Tests\Cruxinator\ClassFinder\TestCase;
+use Cruxinator\ClassFinder\Tests\ClassFinderConcrete;
+use Cruxinator\ClassFinder\Tests\TestCase;
 
 class ClassFinderTest extends TestCase
 {
