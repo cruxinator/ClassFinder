@@ -63,9 +63,9 @@ abstract class ClassFinder
             return self::$optimisedClassMap ;
         }
         return array_reduce(self::getProjectSearchDirs($namespace),
-            function($map, $dir) {
+            function ($map, $dir) {
                 return array_merge($map, ClassMapGenerator::createMap($dir));
-            },[]);
+            }, []);
     }
 
     /**
@@ -144,8 +144,8 @@ abstract class ClassFinder
             $conditional,
             $includeVendor
         ) {
-            return self::strStartsWith($namespace, $class) && 
-                   ($includeVendor || !self::isClassInVendor($class)) && 
+            return self::strStartsWith($namespace, $class) &&
+                   ($includeVendor || !self::isClassInVendor($class)) &&
                    $conditional($class);
         }));
 
