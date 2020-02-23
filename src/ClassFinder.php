@@ -42,17 +42,11 @@ abstract class ClassFinder
             return get_declared_classes();
         }
         $map = self::getClassMap($namespace);
-        // before we process the class list to autoload the resident classes, filter out the ones outside
-        // desired namespace
-        $map = array_filter($map, function (string $value, string $key) use ($namespace) {
-            return self::strStartsWith($namespace, $value) ||
-                   self::strStartsWith($namespace, $key);
-        }, ARRAY_FILTER_USE_BOTH);
-        // now class list of maps are assembled, use class_exists calls to explicitly autoload them,
-        // while not running them
-        foreach ($map as $class => $file) {
-            class_exists($class, true);
-        }
+        array_walk($map, function($className, $fileName, $namespace) {
+            assert(file_exists($fileName);
+            self::strStartsWith($namespace, $className) && class_exists($className);
+        });
+        }, $namespace);
         self::$loadedNamespaces[] = $namespace;
         return get_declared_classes();
     }
@@ -156,12 +150,9 @@ abstract class ClassFinder
             $conditional,
             $includeVendor
         ) {
-            /*$dontSkip = true;
-            if (!$includeVendor) {
-                $dontSkip = !self::isClassInVendor($class);
-            }*/
-            $dontSkip = $includeVendor || !self::isClassInVendor($class);
-            return substr($class, 0, strlen($namespace)) === $namespace && $dontSkip && $conditional($class) ;
+            return self::strStartsWith($namespace, $class) && 
+                   ($includeVendor || !self::isClassInVendor($class)) && 
+                   $conditional($class) ;
         }));
 
         return $classes;
