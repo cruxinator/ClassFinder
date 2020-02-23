@@ -86,7 +86,7 @@ class ClassFinderTest extends TestCase
      */
     public function testErrorCheck()
     {
-        $this->assertFalse(class_exists('Composer\Autoload\ClassMapGenerator', false));
+        $this->classFinder->classLoaderInit = true;
         $unoptimised = $this->classFinder->classLoaderInit;
         $autoloader = $this->classFinder->getComposerAutoloader();
         $rawCM = $autoloader->getClassMap();
@@ -98,6 +98,7 @@ class ClassFinderTest extends TestCase
             ) &&
             class_exists($class);
         }
+        $this->assertFalse(class_exists('Composer\Autoload\ClassMapGenerator', false));
         $dummyCL = new \Composer\Autoload\ClassLoader();
         $autoloader->unregister();
         $dummyCL->register();
