@@ -105,14 +105,14 @@ class ClassFinderTest extends TestCase
             $dummyCL->unregister();
             $autoloader->register();
             if ($unoptimised) {
-                $this->fail();
+                $this->fail('unoptimized autoloader should not get this far');
             }
             return;
         } catch (\Exception $e) {
             $dummyCL->unregister();
             $autoloader->register();
             if (!$unoptimised) {
-                $this->fail();
+                $this->fail('optimised class loader should not throw an exception');
             }
             $this->assertInstanceOf(\Exception::class, $e);
             $this->assertContains('Cruxinator/ClassFinder', $e->getMessage());
