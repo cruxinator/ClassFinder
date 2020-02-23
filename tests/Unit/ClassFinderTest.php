@@ -86,7 +86,7 @@ class ClassFinderTest extends TestCase
      */
     public function testErrorCheck()
     {
-        $this->classFinder->setOptimisedClassMap(false);
+        $this->classFinder->classLoaderInit = true;
         $autoloader = $this->classFinder->getComposerAutoloader();
         $classMap = $autoloader->getClassMap();
         if (array_key_exists(__CLASS__, $classMap)) {

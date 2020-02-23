@@ -25,9 +25,13 @@ abstract class ClassFinder
      */
     private static $vendorDir = '';
     /**
-     * @var null|array|string[]|bool
+     * @var null|array|string[]
      */
     private static $optimisedClassMap = null;
+    /**
+     * @var bool Indicates if autoloader class map is initialised
+     */
+    private static $classLoaderInit = false;
 
     /**
      * Explicitly loads a namespace before returning declared classes.
@@ -38,22 +42,13 @@ abstract class ClassFinder
      */
     private static function getProjectClasses(string $namespace): array
     {
-        if (in_array($namespace, self::$loadedNamespaces)) {
-            return get_declared_classes();
+        if (!in_array($namespace, self::$loadedNamespaces)) {
+            $map = self::getClassMap($namespace);
+            array_walk($map, function ($filename, $className, $namespace) {
+                assert(file_exists($filename), $filename);
+                self::strStartsWith($namespace, $className) && class_exists($className, true);
+            }, $namespace);
         }
-        $map = self::getClassMap($namespace);
-        // before we process the class list to autoload the resident classes, filter out the ones outside
-        // desired namespace
-        $map = array_filter($map, function (string $value, string $key) use ($namespace) {
-            return self::strStartsWith($namespace, $value) ||
-                   self::strStartsWith($namespace, $key);
-        }, ARRAY_FILTER_USE_BOTH);
-        // now class list of maps are assembled, use class_exists calls to explicitly autoload them,
-        // while not running them
-        foreach ($map as $class => $file) {
-            class_exists($class, true);
-        }
-        self::$loadedNamespaces[] = $namespace;
         return get_declared_classes();
     }
 
@@ -67,17 +62,13 @@ abstract class ClassFinder
     private static function getClassMap(string $namespace): array
     {
         self::checkState();
-        if (self::$optimisedClassMap !== false) {
-            assert(!is_bool(self::$optimisedClassMap));
-            return self::$optimisedClassMap ;
-        }
-        $projectDirs = self::getProjectSearchDirs($namespace);
-        $map = [];
-        // Use composer's ClassMapGenerator to pull the class list out of each project search directory
-        foreach ($projectDirs as $dir) {
-            $map = array_merge($map, ClassMapGenerator::createMap($dir));
-        }
-        return $map;
+        return null !== (self::$optimisedClassMap) ?
+            self::$optimisedClassMap :
+            array_reduce(self::getProjectSearchDirs($namespace),
+                function ($map, $dir) {
+                    // Use composer's ClassMapGenerator to pull the class list out of each project search directory
+                    return array_merge($map, ClassMapGenerator::createMap($dir));
+                }, []);
     }
 
     /**
@@ -101,7 +92,7 @@ abstract class ClassFinder
     private static function checkState() : void
     {
         self::initClassMap();
-        if (false === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
+        if (null === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
             throw new Exception('Cruxinator/ClassFinder requires either composer/composer' .
              ' or an optimised autoloader(`composer dump-autoload -o`)');
         }
@@ -112,12 +103,13 @@ abstract class ClassFinder
      */
     private static function initClassMap() :void
     {
-        if (null !== self::$optimisedClassMap) {
+        if (true === self::$classLoaderInit) {
             return;
         }
+        self::$classLoaderInit = true;
         $autoLoader = self::getComposerAutoloader();
         $classMap = $autoLoader->getClassMap();
-        self::$optimisedClassMap = isset($classMap[__CLASS__]) ? $classMap : false;
+        self::$optimisedClassMap = isset($classMap[__CLASS__]) ? $classMap : null;
     }
 
     /**
@@ -127,14 +119,10 @@ abstract class ClassFinder
      */
     private static function getComposerAutoloader(): ?ClassLoader
     {
-        $funcs = spl_autoload_functions();
-        $classLoader = null;
-        foreach ($funcs as $class) {
-            if (is_array($class) && $class[0] instanceof ClassLoader) {
-                $classLoader = $class[0];
-            }
-        }
-        return $classLoader;
+        return array_reduce(spl_autoload_functions(),
+            function ($loader, $prospect) {
+                return is_array($prospect) && $prospect[0] instanceof ClassLoader ? $prospect[0] : $loader;
+            }, null);
     }
 
     /**
@@ -148,20 +136,15 @@ abstract class ClassFinder
      */
     public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true):array
     {
-        $conditional = $conditional ?: function () {
-            return true;
-        };
+        $conditional = $conditional ?: 'is_string';
         $classes = array_values(array_filter(self::getProjectClasses($namespace), function (string $class) use (
             $namespace,
             $conditional,
             $includeVendor
         ) {
-            /*$dontSkip = true;
-            if (!$includeVendor) {
-                $dontSkip = !self::isClassInVendor($class);
-            }*/
-            $dontSkip = $includeVendor || !self::isClassInVendor($class);
-            return substr($class, 0, strlen($namespace)) === $namespace && $dontSkip && $conditional($class) ;
+            return self::strStartsWith($namespace, $class) &&
+                   ($includeVendor || !self::isClassInVendor($class)) &&
+                   $conditional($class);
         }));
 
         return $classes;
@@ -174,8 +157,7 @@ abstract class ClassFinder
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
-        $autoloader = self::getComposerAutoloader();
-        $raw = $autoloader->getPrefixesPsr4();
+        $raw = self::getComposerAutoloader()->getPrefixesPsr4();
         return $raw[$namespace];
     }
 
@@ -188,8 +170,7 @@ abstract class ClassFinder
      */
     private static function isClassInVendor(string $className) : bool
     {
-        $reflection = new ReflectionClass($className);
-        $filename = $reflection->getFileName();
+        $filename = (new ReflectionClass($className))->getFileName();
         return self::strStartsWith(self::$vendorDir, $filename);
     }
 }
