@@ -77,4 +77,14 @@ class ClassFinderConcrete extends ClassFinder
         $property = self::getProperty($name);
         $property->setValue(null, $value);
     }
+
+    /**
+     * @param $name
+     * @throws \ReflectionException
+     */
+    public function __get($name)
+    {
+        $property = self::getProperty($name);
+        $property->getValue();
+    }
 }
