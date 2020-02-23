@@ -38,14 +38,13 @@ abstract class ClassFinder
      */
     private static function getProjectClasses(string $namespace): array
     {
-        if (in_array($namespace, self::$loadedNamespaces)) {
-            return get_declared_classes();
+        if (!in_array($namespace, self::$loadedNamespaces)) {
+            $map = self::getClassMap($namespace);
+            array_walk($map, function ($filename, $className, $namespace) {
+                assert(file_exists($filename), $filename);
+                self::strStartsWith($namespace, $className) && class_exists($className);
+            }, $namespace);
         }
-        $map = self::getClassMap($namespace);
-        array_walk($map, function ($filename, $className, $namespace) {
-            assert(file_exists($filename), $filename);
-            self::strStartsWith($namespace, $className) && class_exists($className);
-        }, $namespace);
         return get_declared_classes();
     }
 
