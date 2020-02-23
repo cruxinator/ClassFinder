@@ -22,7 +22,7 @@ class ClassFinderTest extends TestCase
     public function testSelf()
     {
         $classes = $this->classFinder->getClasses('Cruxinator\\ClassFinder\\');
-        $this->assertEquals(5, count($classes));
+        $this->assertEquals(6, count($classes));
         $this->assertTrue(in_array(ClassFinder::class, $classes));
         $this->assertTrue(in_array(TestCase::class, $classes));
     }
