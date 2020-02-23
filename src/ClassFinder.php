@@ -46,7 +46,7 @@ abstract class ClassFinder
             $map = self::getClassMap($namespace);
             array_walk($map, function ($filename, $className, $namespace) {
                 assert(file_exists($filename), $filename);
-                self::strStartsWith($namespace, $className) && class_exists($className);
+                self::strStartsWith($namespace, $className) && class_exists($className, true);
             }, $namespace);
         }
         return get_declared_classes();
