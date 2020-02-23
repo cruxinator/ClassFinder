@@ -64,13 +64,10 @@ abstract class ClassFinder
             assert(!is_bool(self::$optimisedClassMap));
             return self::$optimisedClassMap ;
         }
-        $projectDirs = self::getProjectSearchDirs($namespace);
-        $map = [];
-        // Use composer's ClassMapGenerator to pull the class list out of each project search directory
-        foreach ($projectDirs as $dir) {
-            $map = array_merge($map, ClassMapGenerator::createMap($dir));
-        }
-        return $map;
+        return array_reduce(self::getProjectSearchDirs($namespace),
+            function($map, $dir) {
+                return array_merge($map, ClassMapGenerator::createMap($dir));
+            },[]);
     }
 
     /**
