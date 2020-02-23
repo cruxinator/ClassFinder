@@ -57,14 +57,12 @@ abstract class ClassFinder
     private static function getClassMap(string $namespace): array
     {
         self::checkState();
-        if (self::$optimisedClassMap !== false) {
-            assert(!is_bool(self::$optimisedClassMap));
-            return self::$optimisedClassMap ;
-        }
-        return array_reduce(self::getProjectSearchDirs($namespace),
-            function ($map, $dir) {
-                return array_merge($map, ClassMapGenerator::createMap($dir));
-            }, []);
+        return !is_bool(self::$optimisedClassMap) ?
+            self::$optimisedClassMap :
+            array_reduce(self::getProjectSearchDirs($namespace),
+                function ($map, $dir) {
+                    return array_merge($map, ClassMapGenerator::createMap($dir));
+                }, []);
     }
 
     /**
