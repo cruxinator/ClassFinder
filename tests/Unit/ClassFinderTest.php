@@ -86,18 +86,22 @@ class ClassFinderTest extends TestCase
      */
     public function testErrorCheck()
     {
-        $this->classFinder->classLoaderInit = true;
+        $unoptimised = $this->classFinder->classLoaderInit;
         $autoloader = $this->classFinder->getComposerAutoloader();
-        $classMap = $autoloader->getClassMap();
         $autoloader->unregister();
 
         try {
             $this->classFinder->checkState();
             $autoloader->register();
-            $this->fail();
+            if ($unoptimised) {
+                $this->fail();
+            }
             return;
         } catch (\Exception $e) {
             $autoloader->register();
+            if (!$unoptimised) {
+                $this->fail();
+            }
             $this->assertInstanceOf(\Exception::class, $e);
             $this->assertContains('Cruxinator/ClassFinder', $e->getMessage());
             $this->assertContains('composer/composer', $e->getMessage());
