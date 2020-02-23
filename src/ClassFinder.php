@@ -39,7 +39,8 @@ abstract class ClassFinder
     private static function getProjectClasses(string $namespace): array
     {
         if (!in_array($namespace, self::$loadedNamespaces)) {
-            array_walk(self::getClassMap($namespace), function ($filename, $className, $namespace) {
+            $map = self::getClassMap($namespace);
+            array_walk($map, function ($filename, $className, $namespace) {
                 assert(file_exists($filename), $filename);
                 self::strStartsWith($namespace, $className) && class_exists($className);
             }, $namespace);
