@@ -86,7 +86,7 @@ class ClassFinderTest extends TestCase
      */
     public function testErrorCheck()
     {
-        $this->classFinder->getClasses('PHPUnit\Framework');
+        $this->classFinder->getClasses('PHPUnit');
         $unoptimised = $this->classFinder->classLoaderInit;
         $autoloader = $this->classFinder->getComposerAutoloader();
         $autoloader->unregister();
