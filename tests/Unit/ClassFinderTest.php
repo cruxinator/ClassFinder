@@ -97,20 +97,21 @@ class ClassFinderTest extends TestCase
             ) &&
             class_exists($class);
         }
-        class_exists('PHP_Token_Stream');
+        $dummyCL = new \Composer\Autoload\ClassLoader();
         $autoloader->unregister();
-
+        $dummyCL->register();
         try {
             $this->classFinder->checkState();
+            $dummyCL->unregister();
             $autoloader->register();
             if ($unoptimised) {
                 $this->fail();
             }
             return;
         } catch (\Exception $e) {
+            $dummyCL->unregister();
             $autoloader->register();
             if (!$unoptimised) {
-                var_dump($e);
                 $this->fail();
             }
             $this->assertInstanceOf(\Exception::class, $e);
