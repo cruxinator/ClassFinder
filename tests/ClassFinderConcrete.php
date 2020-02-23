@@ -85,6 +85,6 @@ class ClassFinderConcrete extends ClassFinder
     public function __get($name)
     {
         $property = self::getProperty($name);
-        $property->getValue();
+        return $property->getValue();
     }
 }
