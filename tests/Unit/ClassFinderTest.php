@@ -90,7 +90,7 @@ class ClassFinderTest extends TestCase
         $autoloader = $this->classFinder->getComposerAutoloader();
         $rawCM = $autoloader->getClassMap();
         foreach ($rawCM as $class => $file) {
-            class_exists($class);
+            $this->classFinder->strStartsWith('PHPUnit', $class) && class_exists($class);
         }
         $autoloader->unregister();
 
