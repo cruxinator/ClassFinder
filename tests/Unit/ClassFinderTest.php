@@ -86,7 +86,6 @@ class ClassFinderTest extends TestCase
      */
     public function testErrorCheck()
     {
-        $this->classFinder->getClasses('PHPUnit');
         $unoptimised = $this->classFinder->classLoaderInit;
         $autoloader = $this->classFinder->getComposerAutoloader();
         $autoloader->unregister();
@@ -101,6 +100,7 @@ class ClassFinderTest extends TestCase
         } catch (\Exception $e) {
             $autoloader->register();
             if (!$unoptimised) {
+                var_dump($e);
                 $this->fail();
             }
             $this->assertInstanceOf(\Exception::class, $e);
