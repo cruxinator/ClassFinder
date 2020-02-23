@@ -158,8 +158,7 @@ abstract class ClassFinder
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
-        $autoloader = self::getComposerAutoloader();
-        $raw = $autoloader->getPrefixesPsr4();
+        $raw = self::getComposerAutoloader()->getPrefixesPsr4();
         return $raw[$namespace];
     }
 
@@ -172,8 +171,7 @@ abstract class ClassFinder
      */
     private static function isClassInVendor(string $className) : bool
     {
-        $reflection = new ReflectionClass($className);
-        $filename = $reflection->getFileName();
+        $filename = (new ReflectionClass($className))->getFileName();
         return self::strStartsWith(self::$vendorDir, $filename);
     }
 }
