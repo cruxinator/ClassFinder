@@ -16,7 +16,7 @@ script:
   - mkdir -p build/logs
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_script:
+after_success:
   - php vendor/bin/php-coveralls --exclude-no-stmt
 
 env: # important!
