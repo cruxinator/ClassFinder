@@ -153,12 +153,9 @@ abstract class ClassFinder
             $conditional,
             $includeVendor
         ) {
-            /*$dontSkip = true;
-            if (!$includeVendor) {
-                $dontSkip = !self::isClassInVendor($class);
-            }*/
-            $dontSkip = $includeVendor || !self::isClassInVendor($class);
-            return substr($class, 0, strlen($namespace)) === $namespace && $dontSkip && $conditional($class) ;
+            return self::strStartsWith($namespace, $class) && 
+                   ($includeVendor || !self::isClassInVendor($class)) && 
+                   $conditional($class);
         }));
 
         return $classes;
