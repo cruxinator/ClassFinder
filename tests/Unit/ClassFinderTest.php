@@ -22,7 +22,7 @@ class ClassFinderTest extends TestCase
     public function testSelf()
     {
         $classes = $this->classFinder->getClasses('Cruxinator\\ClassFinder\\');
-        $this->assertEquals(5, count($classes));
+        $this->assertEquals(6, count($classes));
         $this->assertTrue(in_array(ClassFinder::class, $classes));
         $this->assertTrue(in_array(TestCase::class, $classes));
     }
@@ -89,9 +89,6 @@ class ClassFinderTest extends TestCase
         $this->classFinder->classLoaderInit = true;
         $autoloader = $this->classFinder->getComposerAutoloader();
         $classMap = $autoloader->getClassMap();
-        if (array_key_exists(__CLASS__, $classMap)) {
-            $this->markTestSkipped('Error only works with non optimised autoloader');
-        }
         $autoloader->unregister();
 
         try {
