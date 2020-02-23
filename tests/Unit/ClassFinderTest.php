@@ -90,7 +90,9 @@ class ClassFinderTest extends TestCase
         $autoloader = $this->classFinder->getComposerAutoloader();
         $rawCM = $autoloader->getClassMap();
         foreach ($rawCM as $class => $file) {
-            $this->classFinder->strStartsWith('PHPUnit', $class) && class_exists($class);
+            ($this->classFinder->strStartsWith('PHPUnit', $class) ||
+             $this->classFinder->strStartsWith('PHP_Token', $class))
+            && class_exists($class);
         }
         class_exists('PHP_Token_Stream');
         $autoloader->unregister();
