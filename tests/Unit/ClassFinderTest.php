@@ -88,13 +88,17 @@ class ClassFinderTest extends TestCase
     {
         $unoptimised = $this->classFinder->classLoaderInit;
         $autoloader = $this->classFinder->getComposerAutoloader();
+        $rawCM = $autoloader->getClassMap();
+        foreach ($rawCM as $class => $file) {
+            class_exists($class);
+        }
         $autoloader->unregister();
 
         try {
             $this->classFinder->checkState();
             $autoloader->register();
             if ($unoptimised) {
-                //$this->fail();
+                $this->fail();
             }
             return;
         } catch (\Exception $e) {
