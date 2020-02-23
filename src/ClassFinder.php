@@ -42,7 +42,7 @@ abstract class ClassFinder
             return get_declared_classes();
         }
         $map = self::getClassMap($namespace);
-        array_walk($map, function($className, $fileName, $namespace) {
+        array_walk($map, function ($className, $fileName, $namespace) {
             assert(file_exists($fileName));
             self::strStartsWith($namespace, $className) && class_exists($className);
         }, $namespace);
@@ -149,8 +149,8 @@ abstract class ClassFinder
             $conditional,
             $includeVendor
         ) {
-            return self::strStartsWith($namespace, $class) && 
-                   ($includeVendor || !self::isClassInVendor($class)) && 
+            return self::strStartsWith($namespace, $class) &&
+                   ($includeVendor || !self::isClassInVendor($class)) &&
                    $conditional($class) ;
         }));
 
