@@ -27,6 +27,7 @@ class ClassFinderConcrete extends ClassFinder
         $this->loadedNamespaces = [];
         $this->optimisedClassMap = null;
         $this->vendorDir = '';
+        $this->classLoaderInit = false;
     }
 
     /**
@@ -52,11 +53,6 @@ class ClassFinderConcrete extends ClassFinder
         $reflectionProperty = new ReflectionProperty(parent::class, $name);
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty;
-    }
-
-    public function setOptimisedClassMap($value)
-    {
-        $this->optimisedClassMap = $value;
     }
 
     /**
