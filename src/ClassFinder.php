@@ -25,9 +25,13 @@ abstract class ClassFinder
      */
     private static $vendorDir = '';
     /**
-     * @var null|array|string[]|bool
+     * @var null|array|string[]
      */
     private static $optimisedClassMap = null;
+    /**
+     * @var bool Indicates if autoloader class map is initialised
+     */
+    private static $classLoaderInit = false;
 
     /**
      * Explicitly loads a namespace before returning declared classes.
@@ -58,7 +62,7 @@ abstract class ClassFinder
     private static function getClassMap(string $namespace): array
     {
         self::checkState();
-        return !is_bool(self::$optimisedClassMap) ?
+        return null !== (self::$optimisedClassMap) ?
             self::$optimisedClassMap :
             array_reduce(self::getProjectSearchDirs($namespace),
                 function ($map, $dir) {
@@ -87,7 +91,7 @@ abstract class ClassFinder
     private static function checkState() : void
     {
         self::initClassMap();
-        if (false === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
+        if (null === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
             throw new Exception('Cruxinator/ClassFinder requires either composer/composer' .
              ' or an optimised autoloader(`composer dump-autoload -o`)');
         }
@@ -98,12 +102,13 @@ abstract class ClassFinder
      */
     private static function initClassMap() :void
     {
-        if (null !== self::$optimisedClassMap) {
+        if (true === self::$classLoaderInit) {
             return;
         }
+        self::$classLoaderInit = true;
         $autoLoader = self::getComposerAutoloader();
         $classMap = $autoLoader->getClassMap();
-        self::$optimisedClassMap = isset($classMap[__CLASS__]) ? $classMap : false;
+        self::$optimisedClassMap = isset($classMap[__CLASS__]) ? $classMap : null;
     }
 
     /**
