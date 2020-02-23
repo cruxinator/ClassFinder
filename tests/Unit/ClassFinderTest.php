@@ -100,6 +100,8 @@ class ClassFinderTest extends TestCase
         $this->assertFalse(class_exists('Composer\Autoload\ClassMapGenerator', false));
         $dummyCL = new \Composer\Autoload\ClassLoader();
         $autoloader->unregister();
+        unset($rawCL['Composer\Autoload\ClassMapGenerator']);
+        $dummyCL->addClassMap($rawCL);
         $dummyCL->register();
         try {
             $this->classFinder->checkState();
