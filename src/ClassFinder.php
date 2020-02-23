@@ -118,14 +118,10 @@ abstract class ClassFinder
      */
     private static function getComposerAutoloader(): ?ClassLoader
     {
-        $funcs = spl_autoload_functions();
-        $classLoader = null;
-        foreach ($funcs as $class) {
-            if (is_array($class) && $class[0] instanceof ClassLoader) {
-                $classLoader = $class[0];
-            }
-        }
-        return $classLoader;
+        return array_reduce(spl_autoload_functions(),
+            function ($loader, $prospect) {
+                return is_array($prospect) && $prospect[0] instanceof ClassLoader ? $prospect[0] : $loader;
+            }, null);
     }
 
     /**
