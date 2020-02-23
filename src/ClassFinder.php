@@ -135,9 +135,7 @@ abstract class ClassFinder
      */
     public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true):array
     {
-        $conditional = $conditional ?: function () {
-            return true;
-        };
+        $conditional = $conditional ?: "is_string";
         $classes = array_values(array_filter(self::getProjectClasses($namespace), function (string $class) use (
             $namespace,
             $conditional,
