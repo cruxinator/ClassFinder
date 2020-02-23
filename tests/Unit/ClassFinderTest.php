@@ -92,6 +92,7 @@ class ClassFinderTest extends TestCase
         foreach ($rawCM as $class => $file) {
             $this->classFinder->strStartsWith('PHPUnit', $class) && class_exists($class);
         }
+        class_exists('PHP_Token_Stream');
         $autoloader->unregister();
 
         try {
