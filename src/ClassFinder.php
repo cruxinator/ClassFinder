@@ -68,7 +68,7 @@ abstract class ClassFinder
                 function ($map, $dir) {
                     // Use composer's ClassMapGenerator to pull the class list out of each project search directory
                     return array_merge($map, ClassMapGenerator::createMap($dir));
-                }, []);
+                }, self::getComposerAutoloader()->getClassMap());
     }
 
     /**
