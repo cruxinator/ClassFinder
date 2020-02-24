@@ -10,6 +10,10 @@ use ReflectionProperty;
 
 /**
  * Class ClassFinderConcrete.
+ * @property bool classLoaderInit
+ * @property null|array optimisedClassMap
+ * @property array loadedNamespaces
+ * @property string vendorDir
  * @package Tests\Cruxinator\ClassFinder
  * @method getProjectClasses(string $namespace): array
  * @method getClassMap(string $namespace): array
@@ -19,6 +23,7 @@ use ReflectionProperty;
  * @method getClasses(string $namespace = '',callable $conditional = null, bool $includeVendor = true): array
  * @method getProjectSearchDirs(string $namespace): array
  * @method isClassInVendor(string $className) : bool
+ * @method getComposerAutoloader(): ClassLoader
  */
 class ClassFinderConcrete extends ClassFinder
 {
