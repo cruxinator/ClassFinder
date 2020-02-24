@@ -24,6 +24,7 @@ use ReflectionProperty;
  * @method getProjectSearchDirs(string $namespace): array
  * @method isClassInVendor(string $className) : bool
  * @method getComposerAutoloader(): ClassLoader
+ * @method getVendorDir() : string
  */
 class ClassFinderConcrete extends ClassFinder
 {

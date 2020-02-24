@@ -85,6 +85,18 @@ abstract class ClassFinder
     }
 
     /**
+     * Gets the base vendor Directory
+     *
+     * @return string The vase Vendor Directory.
+     * @throws ReflectionException
+     */
+    private static function getVendorDir(): string {
+        return empty(self::$vendorDir) ?
+            self::$vendorDir = dirname((new ReflectionClass(ClassLoader::class))->getFileName(), 2) :
+            self::$vendorDir ;
+    }
+
+    /**
      * Checks the state requirements (package and autoloader).
      *
      * @throws Exception thrown when a combination of components is not available
@@ -100,6 +112,7 @@ abstract class ClassFinder
 
     /**
      * Initializes the optimised class map, if possible.
+     * @throws ReflectionException
      */
     private static function initClassMap() :void
     {
@@ -115,14 +128,14 @@ abstract class ClassFinder
     /**
      * Gets the Composer Class Loader.
      *
-     * @return ClassLoader|null
+     * @return ClassLoader
+     * @throws ReflectionException
      */
     private static function getComposerAutoloader(): ClassLoader
     {
-        return array_reduce(spl_autoload_functions(),
-            function ($loader, $prospect) {
-                return is_array($prospect) && $prospect[0] instanceof ClassLoader ? $prospect[0] : $loader;
-            }, new ClassLoader());
+
+        /** @noinspection PhpIncludeInspection */
+        return include self::getVendorDir() . DIRECTORY_SEPARATOR . 'autoload.php';
     }
 
     /**
@@ -149,11 +162,13 @@ abstract class ClassFinder
 
         return $classes;
     }
+
     /**
      * Gets the Directories associated with a given namespace.
      *
-     * @param  string $namespace the namespace (without preceding \
+     * @param string $namespace the namespace (without preceding \
      * @return array  a list of directories containing classes for that namespace
+     * @throws ReflectionException
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
@@ -171,6 +186,6 @@ abstract class ClassFinder
     private static function isClassInVendor(string $className) : bool
     {
         $filename = (new ReflectionClass($className))->getFileName();
-        return self::strStartsWith(self::$vendorDir, $filename);
+        return self::strStartsWith(self::getVendorDir(), $filename);
     }
 }
