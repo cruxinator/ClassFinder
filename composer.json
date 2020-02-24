@@ -11,6 +11,10 @@
         "php-coveralls/php-coveralls": "^2.2",
         "infection/infection": "^0.12|^0.13|^0.14|^0.15"
     },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "suggest": {
         "composer/composer": "Allows classmap generation at runtime useful for dev builds"
     },
