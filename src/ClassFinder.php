@@ -172,7 +172,16 @@ abstract class ClassFinder
     private static function getProjectSearchDirs(string $namespace): array
     {
         $raw = self::getComposerAutoloader()->getPrefixesPsr4();
-        return $raw[$namespace];
+        return self::findCompatibleNamespace($namespace,$raw);
+    }
+
+    private static function findCompatibleNamespace(string $namespace, array $psr4){
+        $namespaceParts = array_filter(explode('\\',$namespace));
+        while(!array_key_exists($namespace, $psr4) && count($namespaceParts) !== 0){
+            $namespace = implode('\\', $namespaceParts);
+            array_pop($namespaceParts);
+        }
+        return count($namespaceParts) === 0 ? array_values($psr4) : $psr4[$namespace];
     }
 
     /**
