@@ -117,12 +117,12 @@ abstract class ClassFinder
      *
      * @return ClassLoader|null
      */
-    private static function getComposerAutoloader(): ?ClassLoader
+    private static function getComposerAutoloader(): ClassLoader
     {
         return array_reduce(spl_autoload_functions(),
             function ($loader, $prospect) {
                 return is_array($prospect) && $prospect[0] instanceof ClassLoader ? $prospect[0] : $loader;
-            }, null);
+            }, new ClassLoader());
     }
 
     /**
