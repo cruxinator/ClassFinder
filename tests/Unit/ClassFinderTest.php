@@ -172,7 +172,6 @@ class ClassFinderTest extends TestCase
         $this->assertEquals(!$unoptimised, $pass);
         if ($pass) {
             $this->assertNotNull($this->classFinder->optimisedClassMap);
-
         }
     }
 
