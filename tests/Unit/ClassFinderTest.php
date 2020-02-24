@@ -17,6 +17,28 @@ class ClassFinderTest extends TestCase
      */
     protected $classFinder;
 
+
+    /**
+     * @return array
+     */
+    protected function eagerLoadPhpunit(): array
+    {
+        /**
+         * @var $autoloader ClassLoader
+         */
+        $autoloader = $this->classFinder->getComposerAutoloader();
+        $rawCM = $autoloader->getClassMap();
+        foreach ($rawCM as $class => $file) {
+            (
+                $this->classFinder->strStartsWith('PHPUnit', $class) ||
+                $this->classFinder->strStartsWith('PHP_Token', $class) ||
+                $this->classFinder->strStartsWith('SebastianBergmann', $class)
+            ) &&
+            class_exists($class);
+        }
+        return array($autoloader, $rawCM);
+    }
+
     public function setUp():void
     {
         $this->classFinder = new ClassFinderConcrete();
@@ -109,20 +131,12 @@ class ClassFinderTest extends TestCase
     public function testErrorCheck()
     {
         $unoptimised = $this->classFinder->classLoaderInit;
+        $this->eagerLoadPhpunit();
         /**
          * @var $autoloader ClassLoader
          */
         $autoloader = $this->classFinder->getComposerAutoloader();
         $rawCM = $autoloader->getClassMap();
-        foreach ($rawCM as $class => $file) {
-            (
-                $this->classFinder->strStartsWith('PHPUnit', $class) ||
-                $this->classFinder->strStartsWith('PHP_Token', $class) ||
-                $this->classFinder->strStartsWith('SebastianBergmann', $class)
-            ) &&
-            class_exists($class);
-        }
-        $this->assertFalse(class_exists('Composer\Autoload\ClassMapGenerator', false));
         $dummyCL = new ClassLoader();
         $autoloader->unregister();
         unset($rawCM['Composer\Autoload\ClassMapGenerator']);
