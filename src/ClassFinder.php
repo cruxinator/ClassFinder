@@ -149,7 +149,7 @@ abstract class ClassFinder
     public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true):array
     {
         $conditional = $conditional ?: 'is_string';
-        $classes = array_values(array_filter(self::getProjectClasses($namespace), function (string $class) use (
+        $classes = array_filter(self::getProjectClasses($namespace), function (string $class) use (
             $namespace,
             $conditional,
             $includeVendor
@@ -157,7 +157,7 @@ abstract class ClassFinder
             return self::strStartsWith($namespace, $class) &&
                    ($includeVendor || !self::isClassInVendor($class)) &&
                    $conditional($class);
-        }));
+        });
 
         return $classes;
     }
@@ -177,12 +177,12 @@ abstract class ClassFinder
 
     private static function findCompatibleNamespace(string $namespace, array $psr4): array
     {
-        $namespaceParts = array_filter(explode('\\', $namespace));
+        $namespaceParts = explode('\\', $namespace);
         while (!array_key_exists($namespace, $psr4) && count($namespaceParts) !== 0) {
-            $namespace = implode('\\', $namespaceParts);
+            $namespace = implode('\\', $namespaceParts) . '\\';
             array_pop($namespaceParts);
         }
-        return count($namespaceParts) === 0 ? array_values($psr4) : $psr4[$namespace];
+        return array_key_exists($namespace, $psr4) ? $psr4[$namespace] : array_values($psr4);
     }
 
     /**
