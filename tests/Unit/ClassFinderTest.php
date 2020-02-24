@@ -118,9 +118,9 @@ class ClassFinderTest extends TestCase
                 $this->fail('optimised class loader should not throw an exception');
             }
             $this->assertInstanceOf(\Exception::class, $e);
-            $this->assertContains('Cruxinator/ClassFinder', $e->getMessage());
-            $this->assertContains('composer/composer', $e->getMessage());
-            $this->assertContains('composer dump-autoload -o', $e->getMessage());
+            $this->assertStringContainsString('Cruxinator/ClassFinder', $e->getMessage());
+            $this->assertStringContainsString('composer/composer', $e->getMessage());
+            $this->assertStringContainsString('composer dump-autoload -o', $e->getMessage());
         }
     }
 }
