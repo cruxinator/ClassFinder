@@ -10,15 +10,22 @@ use ReflectionProperty;
 
 /**
  * Class ClassFinderConcrete.
+ * @property bool classLoaderInit
+ * @property null|array optimisedClassMap
+ * @property array loadedNamespaces
+ * @property string vendorDir
  * @package Tests\Cruxinator\ClassFinder
- * @method getProjectClasses(string $namespace): array
- * @method getClassMap(string $namespace): array
- * @method strStartsWith($needle, $haystack): bool
- * @method checkState(): void
- * @method initClassMap(): void
- * @method getClasses(string $namespace = '',callable $conditional = null, bool $includeVendor = true): array
- * @method getProjectSearchDirs(string $namespace): array
- * @method isClassInVendor(string $className) : bool
+ * @method array getProjectClasses(string $namespace)
+ * @method array getClassMap(string $namespace)
+ * @method bool strStartsWith($needle, $haystack)
+ * @method void checkState()
+ * @method void initClassMap()
+ * @method array getClasses(string $namespace = '',callable $conditional = null, bool $includeVendor = true)
+ * @method array getProjectSearchDirs(string $namespace)
+ * @method bool isClassInVendor(string $className)
+ * @method ClassLoader getComposerAutoloader()
+ * @method string getVendorDir()
+ * @method array findCompatibleNamespace(string $namespace, array $psr4)
  */
 class ClassFinderConcrete extends ClassFinder
 {
@@ -76,5 +83,15 @@ class ClassFinderConcrete extends ClassFinder
     {
         $property = self::getProperty($name);
         $property->setValue(null, $value);
+    }
+
+    /**
+     * @param $name
+     * @throws \ReflectionException
+     */
+    public function __get($name)
+    {
+        $property = self::getProperty($name);
+        return $property->getValue();
     }
 }

@@ -68,7 +68,7 @@ abstract class ClassFinder
                 function ($map, $dir) {
                     // Use composer's ClassMapGenerator to pull the class list out of each project search directory
                     return array_merge($map, ClassMapGenerator::createMap($dir));
-                }, []);
+                }, self::getComposerAutoloader()->getClassMap());
     }
 
     /**
@@ -82,6 +82,19 @@ abstract class ClassFinder
     private static function strStartsWith(string $needle, string $haystack):bool
     {
         return substr($haystack, 0, strlen($needle)) === $needle;
+    }
+
+    /**
+     * Gets the base vendor Directory.
+     *
+     * @throws ReflectionException
+     * @return string              the vase Vendor Director
+     */
+    private static function getVendorDir(): string
+    {
+        return empty(self::$vendorDir) ?
+            self::$vendorDir = dirname((new ReflectionClass(ClassLoader::class))->getFileName(), 2) :
+            self::$vendorDir ;
     }
 
     /**
@@ -100,6 +113,7 @@ abstract class ClassFinder
 
     /**
      * Initializes the optimised class map, if possible.
+     * @throws ReflectionException
      */
     private static function initClassMap() :void
     {
@@ -115,14 +129,12 @@ abstract class ClassFinder
     /**
      * Gets the Composer Class Loader.
      *
-     * @return ClassLoader|null
+     * @throws ReflectionException
+     * @return ClassLoader
      */
-    private static function getComposerAutoloader(): ?ClassLoader
+    private static function getComposerAutoloader(): ClassLoader
     {
-        return array_reduce(spl_autoload_functions(),
-            function ($loader, $prospect) {
-                return is_array($prospect) && $prospect[0] instanceof ClassLoader ? $prospect[0] : $loader;
-            }, null);
+        return include self::getVendorDir() . DIRECTORY_SEPARATOR . 'autoload.php';
     }
 
     /**
@@ -137,7 +149,7 @@ abstract class ClassFinder
     public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true):array
     {
         $conditional = $conditional ?: 'is_string';
-        $classes = array_values(array_filter(self::getProjectClasses($namespace), function (string $class) use (
+        $classes = array_filter(self::getProjectClasses($namespace), function (string $class) use (
             $namespace,
             $conditional,
             $includeVendor
@@ -145,20 +157,32 @@ abstract class ClassFinder
             return self::strStartsWith($namespace, $class) &&
                    ($includeVendor || !self::isClassInVendor($class)) &&
                    $conditional($class);
-        }));
+        });
 
         return $classes;
     }
+
     /**
      * Gets the Directories associated with a given namespace.
      *
-     * @param  string $namespace the namespace (without preceding \
-     * @return array  a list of directories containing classes for that namespace
+     * @param  string              $namespace the namespace (without preceding \)
+     * @throws ReflectionException
+     * @return array               a list of directories containing classes for that namespace
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
         $raw = self::getComposerAutoloader()->getPrefixesPsr4();
-        return $raw[$namespace];
+        return self::findCompatibleNamespace($namespace, $raw);
+    }
+
+    private static function findCompatibleNamespace(string $namespace, array $psr4): array
+    {
+        $namespaceParts = explode('\\', $namespace);
+        while (!array_key_exists($namespace, $psr4) && count($namespaceParts) !== 0) {
+            $namespace = implode('\\', $namespaceParts) . '\\';
+            array_pop($namespaceParts);
+        }
+        return array_key_exists($namespace, $psr4) ? $psr4[$namespace] : array_values($psr4);
     }
 
     /**
@@ -171,6 +195,6 @@ abstract class ClassFinder
     private static function isClassInVendor(string $className) : bool
     {
         $filename = (new ReflectionClass($className))->getFileName();
-        return self::strStartsWith(self::$vendorDir, $filename);
+        return self::strStartsWith(self::getVendorDir(), $filename);
     }
 }
