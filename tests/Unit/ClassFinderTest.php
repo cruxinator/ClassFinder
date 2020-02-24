@@ -9,6 +9,7 @@ use Cruxinator\ClassFinder\Tests\ClassFinderConcrete;
 use Cruxinator\ClassFinder\Tests\TestCase;
 use Exception;
 use ReflectionClass;
+use ReflectionProperty;
 
 class ClassFinderTest extends TestCase
 {
@@ -143,9 +144,6 @@ class ClassFinderTest extends TestCase
     {
         $unoptimised = $this->classFinder->classLoaderInit;
         $this->eagerLoadPhpunit();
-        /**
-         * @var $autoloader ClassLoader
-         */
         $autoloader = $this->classFinder->getComposerAutoloader();
         $rawCM = $autoloader->getClassMap();
         $dummyCL = new ClassLoader();
@@ -157,21 +155,78 @@ class ClassFinderTest extends TestCase
             $this->classFinder->checkState();
             $dummyCL->unregister();
             $autoloader->register();
-            if ($unoptimised) {
-                $this->fail('unoptimized autoloader should not get this far');
-            }
-            return;
+            $pass = true;
         } catch (Exception $e) {
             $dummyCL->unregister();
             $autoloader->register();
+            $pass = false;
             if (!$unoptimised) {
-                var_dump($e);
                 $this->fail('optimised class loader should not throw an exception');
             }
+            $this->assertNull($this->classFinder->optimisedClassMap);
             $this->assertInstanceOf(Exception::class, $e);
             $this->assertStringContainsString('Cruxinator/ClassFinder', $e->getMessage());
             $this->assertStringContainsString('composer/composer', $e->getMessage());
             $this->assertStringContainsString('composer dump-autoload -o', $e->getMessage());
+        }
+        $this->assertEquals(!$unoptimised, $pass);
+        if($pass){
+            $this->assertNotNull($this->classFinder->optimisedClassMap);
+
+        }
+    }
+
+
+    public function testFindCompatibleNamespace()
+    {
+        $psr4 = $this->classFinder->getComposerAutoloader()->getPrefixesPsr4();
+        $namespaces = $this->classFinder->findCompatibleNamespace(\Composer\Installer\BinaryInstaller::class, $psr4);
+        $this->assertCount(1,$namespaces);
+        $this->assertArrayHasKey(0, $namespaces);
+        $this->assertStringEndsWith('composer/composer/src/Composer', $namespaces[0]);
+    }
+
+    public function testFindCompatibleNamespaceUnknown()
+    {
+        $psr4 = $this->classFinder->getComposerAutoloader()->getPrefixesPsr4();
+        $namespaces = $this->classFinder->findCompatibleNamespace('\\namespace\\does\\not\\exist', $psr4);
+        $this->assertArrayHasKey(0, $namespaces);
+        foreach($namespaces as $directorys){
+            foreach($directorys as $directory) {
+                $this->assertDirectoryExists($directory);
+            }
+        }
+    }
+    /**
+     * @runInSeparateProcess
+     */
+    public function testGetClassMapWithTrap()
+    {
+        $unoptimised = $this->classFinder->classLoaderInit;
+        $autoloader = $this->classFinder->getComposerAutoloader();
+        $classMap = $autoloader->getClassMap();
+        $this->eagerLoadPhpunit();
+        $this->classFinder->getComposerAutoloader()->addPsr4('PHPUnit\\Framework\\', dirname((new ReflectionClass(\PHPUnit\Framework\Assert::class))->getFileName()));
+        unset($classMap[\PHPUnit\Framework\Assert::class]);
+        $reflectionProperty = new ReflectionProperty(ClassLoader::class, 'classMap');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->classFinder->getComposerAutoloader(),$classMap);
+        $this->classFinder->getComposerAutoloader()->addClassMap(['DummyNamesace\\DummyClass' => __FILE__]);
+        if($unoptimised) {
+            $reflectionProperty->setValue($this->classFinder->getComposerAutoloader(),[]);
+        }
+        $ourClassMap = $this->classFinder->getClassMap('PHPUnit\Framework');
+        if($unoptimised){
+            $this->assertArrayNotHasKey('DummyNamesace\\DummyClass\\', $ourClassMap);
+            $this->assertArrayHasKey(\PHPUnit\Framework\Assert::class, $ourClassMap);
+            $this->assertNull($this->classFinder->optimisedClassMap);
+
+        }else{
+            $this->assertArrayHasKey('DummyNamesace\\DummyClass', $ourClassMap);
+            $this->assertEquals(__FILE__, $ourClassMap['DummyNamesace\\DummyClass']);
+            $this->assertArrayNotHasKey(\PHPUnit\Framework\Assert::class, $ourClassMap);
+            $this->assertNotNull($this->classFinder->optimisedClassMap);
+
         }
     }
 }
