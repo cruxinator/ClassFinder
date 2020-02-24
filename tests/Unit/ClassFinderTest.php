@@ -219,7 +219,6 @@ class ClassFinderTest extends TestCase
             $this->assertArrayNotHasKey('DummyNamesace\\DummyClass\\', $ourClassMap);
             $this->assertArrayHasKey(\PHPUnit\Framework\Assert::class, $ourClassMap);
             $this->assertNull($this->classFinder->optimisedClassMap);
-
         } else {
             $this->assertArrayHasKey('DummyNamesace\\DummyClass', $ourClassMap);
             $this->assertEquals(__FILE__, $ourClassMap['DummyNamesace\\DummyClass']);
