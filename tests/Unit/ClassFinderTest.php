@@ -125,12 +125,13 @@ class ClassFinderTest extends TestCase
         $this->assertFalse(count($classes) > 0);
     }
 
-    public function testClassMapInitCache(){
+    public function testClassMapInitCache()
+    {
         $forceInit = $this->classFinder->classLoaderInit;
         $this->classFinder->initClassMap();
-        if($forceInit) {
+        if ($forceInit) {
             $this->assertNull($this->classFinder->optimisedClassMap);
-        }else{
+        } else {
             $this->assertIsArray($this->classFinder->optimisedClassMap);
         }
         $this->assertTrue($this->classFinder->classLoaderInit);
@@ -164,6 +165,7 @@ class ClassFinderTest extends TestCase
             $dummyCL->unregister();
             $autoloader->register();
             if (!$unoptimised) {
+                var_dump($e);
                 $this->fail('optimised class loader should not throw an exception');
             }
             $this->assertInstanceOf(Exception::class, $e);

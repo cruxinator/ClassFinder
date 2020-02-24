@@ -85,12 +85,13 @@ abstract class ClassFinder
     }
 
     /**
-     * Gets the base vendor Directory
+     * Gets the base vendor Directory.
      *
-     * @return string The vase Vendor Directory.
      * @throws ReflectionException
+     * @return string              the vase Vendor Director
      */
-    private static function getVendorDir(): string {
+    private static function getVendorDir(): string
+    {
         return empty(self::$vendorDir) ?
             self::$vendorDir = dirname((new ReflectionClass(ClassLoader::class))->getFileName(), 2) :
             self::$vendorDir ;
@@ -128,13 +129,11 @@ abstract class ClassFinder
     /**
      * Gets the Composer Class Loader.
      *
-     * @return ClassLoader
      * @throws ReflectionException
+     * @return ClassLoader
      */
     private static function getComposerAutoloader(): ClassLoader
     {
-
-        /** @noinspection PhpIncludeInspection */
         return include self::getVendorDir() . DIRECTORY_SEPARATOR . 'autoload.php';
     }
 
@@ -166,9 +165,9 @@ abstract class ClassFinder
     /**
      * Gets the Directories associated with a given namespace.
      *
-     * @param string $namespace the namespace (without preceding \
-     * @return array  a list of directories containing classes for that namespace
+     * @param  string              $namespace the namespace (without preceding \)
      * @throws ReflectionException
+     * @return array               a list of directories containing classes for that namespace
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
