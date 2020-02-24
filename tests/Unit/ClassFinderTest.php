@@ -125,6 +125,16 @@ class ClassFinderTest extends TestCase
         $this->assertFalse(count($classes) > 0);
     }
 
+    public function testClassMapInitCache(){
+        $forceInit = $this->classFinder->classLoaderInit;
+        $this->classFinder->initClassMap();
+        if($forceInit) {
+            $this->assertNull($this->classFinder->optimisedClassMap);
+        }else{
+            $this->assertIsArray($this->classFinder->optimisedClassMap);
+        }
+        $this->assertTrue($this->classFinder->classLoaderInit);
+    }
     /**
      * @runInSeparateProcess
      */
