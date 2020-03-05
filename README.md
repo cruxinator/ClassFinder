@@ -7,3 +7,21 @@
 [![Total Downloads](https://poser.pugx.org/cruxinator/class-finder/downloads)](https://packagist.org/packages/cruxinator/class-finder)
 [![Monthly Downloads](https://poser.pugx.org/cruxinator/class-finder/d/monthly)](https://packagist.org/packages/cruxinator/class-finder)
 [![Daily Downloads](https://poser.pugx.org/cruxinator/class-finder/d/daily)](https://packagist.org/packages/cruxinator/class-finder)
+
+#ClassFinder
+
+Turbocharged version of get_declared_classes that gets classes from the autoloader as well as memory.
+
+To install, run
+```
+composer require cruxinator/cruxinator/class-finder
+```
+
+To take advantage of the extended class finder:
+
+```
+$classList = \Cruxinator\ClassFinder\ClassFinder::getClasses();
+```
+
+-- Known Limitations --
+* Conditionals can only execute after classes are loaded
