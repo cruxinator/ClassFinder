@@ -157,6 +157,9 @@ jobs:
       - name: "Gather base branch for diff"
         if: ${{ github.event_name == 'pull_request' }}
         run: git fetch origin --no-tags --prune --depth=1 ${{ github.base_ref }} ${{ github.event.pull_request.base.sha }}
+      - name: migrate if required
+        continue-on-error: true
+        run: vendor/bin/phpunit --migrate-configuration
       - name: Collect coverage report
         run: |
           php vendor/phpunit/phpunit/phpunit --stop-on-failure \
