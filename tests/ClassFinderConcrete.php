@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Cruxinator\ClassFinder\Tests;
 
 use Composer\Autoload\ClassLoader;
@@ -10,11 +9,12 @@ use ReflectionProperty;
 
 /**
  * Class ClassFinderConcrete.
+ *
  * @property bool classLoaderInit
  * @property null|array optimisedClassMap
  * @property array loadedNamespaces
  * @property string vendorDir
- * @package Tests\Cruxinator\ClassFinder
+ *
  * @method array       getProjectClasses(string $namespace)
  * @method array       getClassMap(string $namespace)
  * @method bool        strStartsWith($needle, $haystack)
@@ -39,7 +39,9 @@ class ClassFinderConcrete extends ClassFinder
 
     /**
      * @param $name
+     *
      * @throws \ReflectionException
+     *
      * @return \ReflectionMethod
      */
     protected static function getMethod($name)
@@ -47,36 +49,44 @@ class ClassFinderConcrete extends ClassFinder
         $class = new ReflectionClass(self::class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method;
     }
 
     /**
      * @param $name
+     *
      * @throws \ReflectionException
+     *
      * @return ReflectionProperty
      */
     protected static function getProperty($name)
     {
         $reflectionProperty = new ReflectionProperty(parent::class, $name);
         $reflectionProperty->setAccessible(true);
+
         return $reflectionProperty;
     }
 
     /**
      * @param $name
      * @param $arguments
+     *
      * @throws \ReflectionException
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
     {
         $method = self::getMethod($name);
+
         return $method->invokeArgs(null, $arguments);
     }
 
     /**
      * @param $name
      * @param $value
+     *
      * @throws \ReflectionException
      */
     public function __set($name, $value)
@@ -87,11 +97,13 @@ class ClassFinderConcrete extends ClassFinder
 
     /**
      * @param $name
+     *
      * @throws \ReflectionException
      */
     public function __get($name)
     {
         $property = self::getProperty($name);
+
         return $property->getValue();
     }
 }
