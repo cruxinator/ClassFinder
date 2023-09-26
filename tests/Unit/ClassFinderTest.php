@@ -165,9 +165,9 @@ class ClassFinderTest extends TestCase
             }
             $this->assertNull($this->classFinder->optimisedClassMap);
             $this->assertInstanceOf(Exception::class, $e);
-            $this->assertStringContainsString('Cruxinator/ClassFinder', $e->getMessage());
-            $this->assertStringContainsString('composer/composer', $e->getMessage());
-            $this->assertStringContainsString('composer dump-autoload -o', $e->getMessage());
+            $this->assertStringContainsStringShim('Cruxinator/ClassFinder', $e->getMessage());
+            $this->assertStringContainsStringShim('composer/composer', $e->getMessage());
+            $this->assertStringContainsStringShim('composer dump-autoload -o', $e->getMessage());
         }
         $this->assertEquals(!$unoptimised, $pass);
         if ($pass) {
