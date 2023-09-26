@@ -1,4 +1,5 @@
 <?php
+
 namespace Cruxinator\ClassFinder;
 
 use Composer\Autoload\ClassLoader;
@@ -11,8 +12,6 @@ use ReflectionException;
  * Class ClassFinder.
  *
  * Functionality similar to get_declared_classes(), with autoload support.
- *
- * @package Cruxinator\ClassFinder
  */
 abstract class ClassFinder
 {
@@ -36,8 +35,10 @@ abstract class ClassFinder
     /**
      * Explicitly loads a namespace before returning declared classes.
      *
-     * @param  string         $namespace the namespace to load
+     * @param string $namespace the namespace to load
+     *
      * @throws Exception
+     *
      * @return array|string[] an array with the name of the defined classes
      */
     private static function getProjectClasses(string $namespace): array
@@ -49,37 +50,45 @@ abstract class ClassFinder
                 self::strStartsWith($namespace, $className) && class_exists($className, true);
             }, $namespace);
         }
+
         return get_declared_classes();
     }
 
     /**
      * Attempts to get an optimised ClassMap failing that attempts to generate one for the namespace.
      *
-     * @param  string              $namespace the namespace to generate for if necessary
+     * @param string $namespace the namespace to generate for if necessary
+     *
      * @throws Exception
+     *
      * @return null|array|string[] the class map, keyed by Classname values of files
      */
     private static function getClassMap(string $namespace): array
     {
         self::checkState();
+
         return null !== (self::$optimisedClassMap) ?
             self::$optimisedClassMap :
-            array_reduce(self::getProjectSearchDirs($namespace),
+            array_reduce(
+                self::getProjectSearchDirs($namespace),
                 function ($map, $dir) {
                     // Use composer's ClassMapGenerator to pull the class list out of each project search directory
                     return array_merge($map, ClassMapGenerator::createMap($dir));
-                }, self::getComposerAutoloader()->getClassMap());
+                },
+                self::getComposerAutoloader()->getClassMap()
+            );
     }
 
     /**
      * Checks if a string starts with another string.
      * Simple Helper for readability.
      *
-     * @param  string $needle   the string to check
-     * @param  string $haystack the input string
-     * @return bool   true if haystack starts with needle, false otherwise
+     * @param string $needle   the string to check
+     * @param string $haystack the input string
+     *
+     * @return bool true if haystack starts with needle, false otherwise
      */
-    private static function strStartsWith(string $needle, string $haystack):bool
+    private static function strStartsWith(string $needle, string $haystack): bool
     {
         return substr($haystack, 0, strlen($needle)) === $needle;
     }
@@ -88,13 +97,14 @@ abstract class ClassFinder
      * Gets the base vendor Directory.
      *
      * @throws ReflectionException
-     * @return string              the vase Vendor Director
+     *
+     * @return string the vase Vendor Director
      */
     private static function getVendorDir(): string
     {
         return empty(self::$vendorDir) ?
             self::$vendorDir = dirname((new ReflectionClass(ClassLoader::class))->getFileName(), 2) :
-            self::$vendorDir ;
+            self::$vendorDir;
     }
 
     /**
@@ -102,20 +112,21 @@ abstract class ClassFinder
      *
      * @throws Exception thrown when a combination of components is not available
      */
-    private static function checkState() : void
+    private static function checkState(): void
     {
         self::initClassMap();
         if (null === self::$optimisedClassMap && !class_exists(ClassMapGenerator::class)) {
-            throw new Exception('Cruxinator/ClassFinder requires either composer/composer' .
+            throw new Exception('Cruxinator/ClassFinder requires either composer/composer'.
              ' or an optimised autoloader(`composer dump-autoload -o`)');
         }
     }
 
     /**
      * Initializes the optimised class map, if possible.
+     *
      * @throws ReflectionException
      */
-    private static function initClassMap() :void
+    private static function initClassMap(): void
     {
         if (true === self::$classLoaderInit) {
             return;
@@ -130,23 +141,26 @@ abstract class ClassFinder
      * Gets the Composer Class Loader.
      *
      * @throws ReflectionException
+     *
      * @return ClassLoader
      */
     private static function getComposerAutoloader(): ClassLoader
     {
-        return include self::getVendorDir() . DIRECTORY_SEPARATOR . 'autoload.php';
+        return include self::getVendorDir().DIRECTORY_SEPARATOR.'autoload.php';
     }
 
     /**
      * Gets a list of classes defined in the autoloader. get_declared_classes().
      *
-     * @param  string        $namespace     namespace prefix to restrict the list (must be configured psr4 namespace
-     * @param  callable|null $conditional   callable method of signature `conditional(string $className) : bool` to check to include
-     * @param  bool          $includeVendor whether classes in the vendor directory should be considered
+     * @param string        $namespace     namespace prefix to restrict the list (must be configured psr4 namespace
+     * @param callable|null $conditional   callable method of signature `conditional(string $className) : bool` to check to include
+     * @param bool          $includeVendor whether classes in the vendor directory should be considered
+     *
      * @throws Exception
-     * @return array         the list of classes
+     *
+     * @return array the list of classes
      */
-    public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true):array
+    public static function getClasses(string $namespace = '', callable $conditional = null, bool $includeVendor = true): array
     {
         $conditional = $conditional ?: 'is_string';
         $classes = array_filter(self::getProjectClasses($namespace), function (string $class) use (
@@ -165,13 +179,16 @@ abstract class ClassFinder
     /**
      * Gets the Directories associated with a given namespace.
      *
-     * @param  string              $namespace the namespace (without preceding \)
+     * @param string $namespace the namespace (without preceding \)
+     *
      * @throws ReflectionException
-     * @return array               a list of directories containing classes for that namespace
+     *
+     * @return array a list of directories containing classes for that namespace
      */
     private static function getProjectSearchDirs(string $namespace): array
     {
         $raw = self::getComposerAutoloader()->getPrefixesPsr4();
+
         return self::findCompatibleNamespace($namespace, $raw);
     }
 
@@ -179,22 +196,26 @@ abstract class ClassFinder
     {
         $namespaceParts = explode('\\', $namespace);
         while (!array_key_exists($namespace, $psr4) && count($namespaceParts) !== 0) {
-            $namespace = implode('\\', $namespaceParts) . '\\';
+            $namespace = implode('\\', $namespaceParts).'\\';
             array_pop($namespaceParts);
         }
+
         return array_key_exists($namespace, $psr4) ? $psr4[$namespace] : array_values($psr4);
     }
 
     /**
      * Identify if the class is in the vendor directory.
      *
-     * @param  string              $className the class to test
+     * @param string $className the class to test
+     *
      * @throws ReflectionException
-     * @return bool                true if in vendor otherwise false
+     *
+     * @return bool true if in vendor otherwise false
      */
-    private static function isClassInVendor(string $className) : bool
+    private static function isClassInVendor(string $className): bool
     {
         $filename = (new ReflectionClass($className))->getFileName();
+
         return self::strStartsWith(self::getVendorDir(), $filename);
     }
 }

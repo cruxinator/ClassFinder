@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Cruxinator\ClassFinder\Tests\Unit;
 
 use Composer\Autoload\ClassLoader;
@@ -17,7 +16,6 @@ class ClassFinderTest extends TestCase
      * @var ClassFinderConcrete
      */
     protected $classFinder;
-
 
     /**
      * @return array
@@ -37,10 +35,11 @@ class ClassFinderTest extends TestCase
             ) &&
             class_exists($class);
         }
-        return array($autoloader, $rawCM);
+
+        return [$autoloader, $rawCM];
     }
 
-    public function setUp():void
+    public function setUp(): void
     {
         $this->classFinder = new ClassFinderConcrete();
     }
@@ -70,6 +69,7 @@ class ClassFinderTest extends TestCase
         $twoClasses = $this->classFinder->getClasses('Psr\\Log\\');
         $this->assertEquals(count($classes), count($twoClasses));
     }
+
     /**
      * @throws Exception
      */
@@ -87,6 +87,7 @@ class ClassFinderTest extends TestCase
     {
         $classes = $this->classFinder->getClasses('Psr\\Log\\', function ($class) {
             $reflectionClass = new ReflectionClass($class);
+
             return !$reflectionClass->isAbstract();
         });
         $this->assertTrue(count($classes) > 0);
@@ -106,6 +107,7 @@ class ClassFinderTest extends TestCase
     {
         $classes = $this->classFinder->getClasses('Psr\\Log\\', function ($class) {
             $reflectionClass = new ReflectionClass($class);
+
             return $reflectionClass->isAbstract();
         });
         $this->assertTrue(count($classes) > 0);
@@ -137,6 +139,7 @@ class ClassFinderTest extends TestCase
         }
         $this->assertTrue($this->classFinder->classLoaderInit);
     }
+
     /**
      * @runInSeparateProcess
      */
@@ -151,6 +154,7 @@ class ClassFinderTest extends TestCase
         unset($rawCM['Composer\Autoload\ClassMapGenerator']);
         $dummyCL->addClassMap($rawCM);
         $dummyCL->register();
+
         try {
             $this->classFinder->checkState();
             $dummyCL->unregister();
@@ -165,16 +169,15 @@ class ClassFinderTest extends TestCase
             }
             $this->assertNull($this->classFinder->optimisedClassMap);
             $this->assertInstanceOf(Exception::class, $e);
-            $this->assertStringContainsString('Cruxinator/ClassFinder', $e->getMessage());
-            $this->assertStringContainsString('composer/composer', $e->getMessage());
-            $this->assertStringContainsString('composer dump-autoload -o', $e->getMessage());
+            $this->assertStringContainsStringShim('Cruxinator/ClassFinder', $e->getMessage());
+            $this->assertStringContainsStringShim('composer/composer', $e->getMessage());
+            $this->assertStringContainsStringShim('composer dump-autoload -o', $e->getMessage());
         }
         $this->assertEquals(!$unoptimised, $pass);
         if ($pass) {
             $this->assertNotNull($this->classFinder->optimisedClassMap);
         }
     }
-
 
     public function testFindCompatibleNamespace()
     {
@@ -196,6 +199,7 @@ class ClassFinderTest extends TestCase
             }
         }
     }
+
     /**
      * @runInSeparateProcess
      */
