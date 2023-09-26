@@ -19,7 +19,7 @@ jobs:
         uses: ./.github/actions/php_ver
         id: releases
         with:
-          releases: 7.1
+          releases: 7.4
   tests:
     needs: output_releases
     runs-on: ${{ matrix.operating-system }}
