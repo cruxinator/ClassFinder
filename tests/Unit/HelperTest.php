@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Cruxinator\ClassFinder\Tests\Unit;
 
 use Cruxinator\ClassFinder\Tests\ClassFinderConcrete;
@@ -13,13 +12,14 @@ class HelperTest extends TestCase
      */
     protected $classFinder;
 
-    public function setUp():void
+    public function setUp(): void
     {
         $this->classFinder = new ClassFinderConcrete();
     }
 
     /**
      * @dataProvider strStartsWithProvider
+     *
      * @param mixed $needle
      * @param mixed $haystack
      * @param mixed $result
@@ -28,7 +28,6 @@ class HelperTest extends TestCase
     {
         $this->assertEquals($result, $this->classFinder->strStartsWith($needle, $haystack));
     }
-
 
     public function strStartsWithProvider()
     {
