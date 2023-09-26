@@ -29,7 +29,8 @@ class HelperTest extends TestCase
         $this->assertEquals($result, $this->classFinder->strStartsWith($needle, $haystack));
     }
 
-    public function strStartsWithProvider()
+    public static function strStartsWithProvider()
+
     {
         return [
             ['abcd', 'abcdefgh', true],
