@@ -30,7 +30,6 @@ class HelperTest extends TestCase
     }
 
     public static function strStartsWithProvider()
-
     {
         return [
             ['abcd', 'abcdefgh', true],
